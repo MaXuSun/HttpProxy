@@ -4,30 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.Socket;
-
-import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 public class Utils {
-
-  /**
-   * 向指定的clientSocket发送消息msg,并将信息输出到屏幕上
-   * 
-   * @param clientSocket
-   * @param msg
-   * @throws IOException
-   */
-  public void sendMsg(Socket clientSocket, String msg) {
-    PrintStream pStream;
-    try {
-      pStream = new PrintStream(clientSocket.getOutputStream());
-      pStream.print(msg);
-      pStream.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
 
   /**
    * 从http请求中提取需要的HttpHeader内容
@@ -73,9 +51,9 @@ public class Utils {
   }
 
   /**
-   * 从一个br里面读取socket整个内容并返回
+   * 从一个socket的BufferedReader里面按行读取整个HTTP或者HTTPS报文内容
    * 
-   * @param br
+   * @param br  一个对socket的InputSream进行封装的BufferedReader
    * @return
    * @throws IOException
    */
@@ -90,25 +68,27 @@ public class Utils {
       }
       sb.append(line).append("\r\n");
     } catch (IOException e) {
-      //e.printStackTrace();
-      System.out.println("向该流读内容出错");
+      System.err.println("Error reading from this stream!");
     }
     return sb.toString();
   }
-  
+
   /**
    * 将InputStream中读取的流直接发送给OutputStream
+   * 
    * @param inputStream
    * @param outputStream
-   * @param size       设置读取时的缓冲区大小
-   * @throws IOException 
+   * @param size
+   *          设置读取时的缓冲区大小
+   * @throws IOException
    */
-  public void fromInputToOutput(InputStream inputStream,OutputStream outputStream,int bufSize) throws IOException {
+  public void fromInputToOutput(InputStream inputStream,
+      OutputStream outputStream, int bufSize) throws IOException {
     byte[] buffer = new byte[bufSize];
     int size = 0;
-    while ((size = inputStream.read(buffer))!=-1) {
-      System.out.println(new String(buffer));
-      outputStream.write(buffer,0,size);
+    while ((size = inputStream.read(buffer)) != -1) {
+      //System.out.println(new String(buffer, "utf8"));
+      outputStream.write(buffer, 0, size);
       outputStream.flush();
     }
   }
