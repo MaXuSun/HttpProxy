@@ -9,7 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import utils.Forbid;
 import utils.HttpHeader;
@@ -54,11 +57,6 @@ public class ProxyHandle implements Runnable {
 
       // 将从客户端得到的请求进行分解，然后存在header变量中
       header = utils.parseHeader(request);
-      
-      System.err.println(header.getRequest());
-      header.setRequest(StaticData.IF_MODIFIED, "123");
-      header.setRequest("Content-Length", "90");
-      System.err.println(header.getRequest());
 
       // 对于空解析直接返回，跳过
       if (header.getHost() == null || header.getHost().isEmpty()) {
@@ -72,7 +70,7 @@ public class ProxyHandle implements Runnable {
         cliOutStream.flush();
         return;
       }
-      
+
       // 禁止某些用户访问外部网络
       if (forbid.containUser(header.getCookie())
           || forbid.containUser(this.clisocket.getInetAddress().toString())) {
@@ -86,20 +84,6 @@ public class ProxyHandle implements Runnable {
         this.setPhishingSite(header);
       }
 
-      //对文件进行缓存
-      if (this.cacheFile(header.getUrl(), cliOutStream)) {
-        return;
-      }
-
-      Path path = utils.getPathFromURL(header.getRequest(), "cache");
-      File file = utils.createFile(path);
-      fileOutStream = new FileOutputStream(file);
-      
-
-      System.out.println(
-          header.getHost() + "   " + header.getPort() + "  " + header.getUrl());
-      System.out.println("request:\n" + request);
-
       // 建立与服务器端的连接
       serSocket = new Socket(header.getHost(), header.getPort());
 
@@ -108,21 +92,32 @@ public class ProxyHandle implements Runnable {
       this.clisocket.setSoTimeout(StaticData.TIMEOUT);
       serInStream = serSocket.getInputStream();
       serOutStream = serSocket.getOutputStream();
-      System.out
-          .println("Successfully connected remote server:" + header.getHost());
 
-      System.out.println("header.getHost:\n" + header.getHost());
-
-      // 根据情况分别对HTTPS和HTTP请求进行处理
+      // 如果请求是HTTPS就进行简单转发，且HTTPs不支持缓存功能
       if ("CONNECT".equalsIgnoreCase(header.getMethod())) {
-         cliOutStream.write(StaticData.SUCCESS.getBytes());
-         cliOutStream.flush();
-         ProcessHttps(cliInStream, serInStream, cliOutStream, serOutStream);
-      } else {
-        // System.out.println("处理HTTP请求");
-        ProcessHttp(cliInStream, serInStream, cliOutStream, serOutStream,
-            request, fileOutStream);
+        cliOutStream.write(StaticData.SUCCESS.getBytes());
+        cliOutStream.flush();
+        ProcessHttps(cliInStream, serInStream, cliOutStream, serOutStream);
+        return;
       }
+
+      // 询问文件是否是最新版
+      if (this.askNewFile(header.getUrl(), serInStream, serOutStream)) {
+        this.cacheFile(header.getUrl(), cliOutStream);
+        return;
+      }
+      // 如果需要缓存文件，就得到对应的文件流用来缓存
+      Path path = utils.getPathFromURL(header.getUrl(),
+          StaticData.CACHE_FILE_ROOT);
+      File file = utils.createFile(path);
+      fileOutStream = new FileOutputStream(file);
+      System.out
+          .println("Successfully connected remote server: " + header.getHost());
+      System.out.println("Cookie: "+header.getCookie());
+
+      // 处理HTTP请求
+      ProcessHttp(cliInStream, serInStream, cliOutStream, serOutStream, request,
+          fileOutStream);
 
     } catch (Exception e) {
       // e.printStackTrace();
@@ -178,7 +173,6 @@ public class ProxyHandle implements Runnable {
     // 用来阻塞，等待Task线程执行完毕，关闭Socket
     while (true) {
       if (task.getDone()) {
-        System.out.println("关闭socket");
         break;
       }
     }
@@ -186,7 +180,7 @@ public class ProxyHandle implements Runnable {
   }
 
   /**
-   * 处理 HTTP请求,交换两者之间的数据
+   * 处理 HTTP请求,交换客户端与服务器端之间的数据
    * 
    * @param clientInputStream
    * @param csInputStream
@@ -199,7 +193,6 @@ public class ProxyHandle implements Runnable {
       InputStream csInputStream, OutputStream clientOutputStream,
       OutputStream csOutputStream, String request, FileOutputStream fos)
       throws IOException {
-    System.out.println("retuest:\n" + request);
 
     // 将客户端http请求报文发送给服务器端
     try {
@@ -229,22 +222,79 @@ public class ProxyHandle implements Runnable {
   }
 
   /**
-   * 缓存文件函数,判断url资源是否被缓存下来了，如果被缓存下来就将该文件
-   * 输出到 cliOutStrem 输出流中
-   * @param Strurl url资源
-   * @param outStream 一个输出流
+   * 询问某文件是否为最新资源，如果已经是最新资源则返回true，如果不是最新资源且从远程服务器获取到最新资源则返回true； 其他情况一律返回false1
+   * 
+   * @return
+   * @throws Exception
+   */
+  private boolean askNewFile(String strUrl, InputStream inputStream,
+      OutputStream outStream) throws Exception {
+    Path path = utils.getPathFromURL(strUrl, StaticData.CACHE_FILE_ROOT);
+    File file = path.toFile();
+    // 如果文件不存在直接返回 false 知道该文件不存在
+    // 否则构建一个条件请求头
+    if (!file.exists()) {
+      return false;
+    } else {
+      URL url = new URL(strUrl);
+      // 获得文件修改的最后时间
+      SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss",
+          Locale.ENGLISH);
+      String lastModifyTime = format.format(file.lastModified());
+
+      // 对于主页不进行询问，因为主页不确定是以.jsp,.html,或者其他类型的主页，直接返回false重新加载
+      if (url.getPath().endsWith("/")) {
+        return false;
+      }
+
+      // 构建条件请求头
+      String request = "GET " + url.getPath() + " HTTP/1.1\r\n" + "Host: "
+          + url.getHost() + "\r\n" + "If-modified-since: " + lastModifyTime
+          + "\r\n\r\n";
+
+      // 向远程服务器发送条件请求头
+      outStream.write(request.getBytes());
+      outStream.flush();
+
+      // 从远程服务器接受反馈
+      String get = utils.readLineByIs(inputStream);
+
+      // 如果从远程服务器没有收到反馈消息就直接当作本地没有该文件处理
+      if (get == null || get.isEmpty()) {
+        return false;
+      } else if (get.contains("304") || get.contains("200")) { // 如果包含200或者304就说明已经是最新的内容就返回true
+        return true;
+      } else { // 否则不是最新内容，就从远处获取最新内容
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(get.getBytes());
+        fileOutputStream.flush(); // 先将刚才读取的内容缓存到本地
+        utils.fromInputToOutput(inputStream, fileOutputStream,
+            StaticData.SERVER_BUFSIZE, null); // 再将流中剩下的内容缓存在本地
+        fileOutputStream.close();
+        return false;
+      }
+    }
+  }
+
+  /**
+   * 缓存文件函数,判断url资源是否被缓存下来了，如果被缓存下来就将该文件 输出到 cliOutStrem 输出流中
+   * 
+   * @param Strurl
+   *          url资源
+   * @param outStream
+   *          一个输出流
    * @return
    * @throws Exception
    */
   private boolean cacheFile(String Strurl, OutputStream outStream)
       throws Exception {
-    
-    Path path = utils.getPathFromURL(Strurl, "cache");    
+
+    Path path = utils.getPathFromURL(Strurl, StaticData.CACHE_FILE_ROOT);
     File file = path.toFile();
     if (file.exists()) {
       FileInputStream inputStream = new FileInputStream(file);
-      utils.fromInputToOutput(inputStream, outStream,
-          StaticData.SERVER_BUFSIZE, null);
+      utils.fromInputToOutput(inputStream, outStream, StaticData.SERVER_BUFSIZE,
+          null);
       inputStream.close();
       return true;
     } else {

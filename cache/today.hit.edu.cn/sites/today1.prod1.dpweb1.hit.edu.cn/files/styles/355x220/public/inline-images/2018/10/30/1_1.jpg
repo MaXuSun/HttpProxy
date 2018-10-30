@@ -1,0 +1,13 @@
+HTTP/1.1 304 Not Modified
+Date: Tue, 30 Oct 2018 13:27:26 GMT
+Server: Apache/2.4.18 (Ubuntu)
+ETag: "1e5c7-5797077332100"
+X-Content-Type-Options: nosniff
+Last-Modified: Tue, 30 Oct 2018 11:27:06 GMT
+Content-Type: image/jpeg
+X-Varnish: 140518247 139617904
+Age: 62
+Via: 1.1 varnish-v4
+X-Varnish-Cache: HIT
+Connection: keep-alive
+

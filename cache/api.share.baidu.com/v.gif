@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Content-Type: image/gif
+Date: Tue, 30 Oct 2018 13:28:38 GMT
+Expires: 0
+Pragma: no-cache
+Server: apache
+Content-Length: 0
+
