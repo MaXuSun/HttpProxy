@@ -25,4 +25,6 @@ public class StaticData {
   public static int TIMEOUT = 3000;
   // 开启的最大线程数
   public static int MAX_THREAD_SIZE = 20;
+  
+  public static String IF_MODIFIED = "If-modified-since";
 }

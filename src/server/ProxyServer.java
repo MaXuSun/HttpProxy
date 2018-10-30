@@ -31,14 +31,14 @@ public class ProxyServer extends ServerSocket {
     super(StaticData.PROXYSERVER_PORT);
     System.out.println("代理服务器开启等待连接……");
     this.forbid = forbid;
-    load();
+    //load();
   }
 
   /**
    * 代理服务器加载函数
    * @throws IOException
    */
-  private void load() throws IOException {
+  public void load() throws IOException {
     while (true) {
       Socket socket = this.accept();
       threadPool.execute(new ProxyHandle(socket, this.forbid,openPushingSite));

@@ -1,0 +1,542 @@
+HTTP/1.1 200 OK
+Date: Tue, 30 Oct 2018 06:04:47 GMT
+Server: Apache/2.2.22 (Unix) DAV/2 mod_jk/1.2.23
+Accept-Ranges: bytes
+Transfer-Encoding: chunked
+Content-Type: text/html
+
+14c3
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>教务处</title>
+
+<link type="text/css" href="/_css/_system/system.css" rel="stylesheet"/>
+<link type="text/css" href="/_upload/site/1/style/3/3.css" rel="stylesheet"/>
+<link type="text/css" href="/_upload/site/00/50/80/style/66/66.css" rel="stylesheet"/>
+<link type="text/css" href="/_js/_portletPlugs/wp_sclndr/wp_sclndr.css" rel="stylesheet" />
+
+<link type="text/css" href="/_js/_portletPlugs/simpleNews/css/simplenews.css" rel="stylesheet" />
+<link type="text/css" href="/_js/_portletPlugs/datepicker/css/datepicker.css" rel="stylesheet" />
+<link type="text/css" href="/_js/_portletPlugs/sudyNavi/css/sudyNav.css" rel="stylesheet" />
+<link type="text/css" href="/_js/_portletPlugs/wbox/css/wbox_nobg.css" rel="stylesheet" />
+
+
+<script language="javascript" src="/_js/jquery.min.js" sudy-wp-context="" sudy-wp-siteId="80"></script>
+<script language="javascript" src="/_js/jquery.sudy.wp.visitcount.js"></script>
+<script type="text/javascript" src="/_js/_portletPlugs/wp_sclndr/wp_sclndr.js"></script>
+
+<script type="text/javascript" src="/_js/_portletPlugs/datepicker/js/jquery.datepicker.js"></script>
+<script type="text/javascript" src="/_js/_portletPlugs/datepicker/js/datepicker_lang_HK.js"></script>
+<script type="text/javascript" src="/_js/_portletPlugs/sudyNavi/jquery.sudyNav.js"></script>
+<script type="text/javascript" src="/_js/_portletPlugs/wbox/js/wbox.js"></script>
+<style type="text/css">
+@import url("/_upload/tpl/00/b7/183/template183/style.css");
+</style>
+<script>
+window.onload=function()
+{
+	var oCal=document.getElementById("calendar");
+	var oTitle=oCal.getElementsByTagName("h1")[0];
+	var oUl=oCal.getElementsByTagName("ul")[0];
+	var aLi=oUl.getElementsByTagName("li");
+	var oPre=oCal.getElementsByTagName("span")[0];
+	var oNext=oCal.getElementsByTagName("span")[1];
+	var oNow=new Date();
+	var nowYear=oNow.getFullYear();
+	var nowMonth=oNow.getMonth();
+	var nowDate=oNow.getDate();
+	var nowDay=oNow.getDay();
+	var nowTime=oNow.getTime();
+	var tMonth=nowMonth;//作为日历里更改的那个Month
+	function createCalendar(tMonth)
+	{
+		//根据传入的月份重新算时间
+		var oDate=new Date();
+		oDate.setMonth(tMonth);
+		oDate.setDate(1);
+		var iYear=oDate.getFullYear();
+		var iMonth=oDate.getMonth();
+		var iDay=oDate.getDay();
+		var iDay=oDate.getDay();
+		if (iDay==0){
+			iDay=6;}
+		else{
+			iDay--
+		}
+
+		oTitle.innerHTML=iYear+"年"+(iMonth+1)+"月";
+		//初始化一下
+		for(var i=0;i<aLi.length;i++)
+		{
+			aLi[i].innerHTML="";
+			aLi[i].style.height="15px";
+			aLi[i].className="";
+		}
+		var iSum=0;	//存本月天数
+		var bLeap=false;//是否是闰年
+		if(iYear%4==0 && iYear%100!==0 || iYear%400==0) bLeap=true;
+		switch(iMonth+1)
+		{
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				iSum=31;
+				break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				iSum=30;
+				break;
+			case 2:
+				if(bLeap) iSum=29;
+				else iSum=28;
+				break;
+		}
+		for(var i=1;i<=iSum;i++)
+		{
+			aLi[iDay].innerHTML=i;
+			
+			iDay++;
+		}
+		
+		for(var i=0;i<aLi.length;i++)
+		{
+		
+			if(aLi[i].innerHTML==nowDate && iYear==nowYear && iMonth==nowMonth)
+			{
+				aLi[i].className="active";
+				
+			}
+			
+			else if((aLi[i].innerHTML<nowDate && iMonth==nowMonth && iYear==nowYear) ||
+				iMonth<nowMonth && iYear==nowYear || 
+				iYear<nowYear)
+			{
+				aLi[i].className="grey";
+				
+			}
+		}
+		
+		//把没字的格子折叠起来
+		for(var i=0;i<aLi.length;i++)
+		{
+			if(aLi[i].innerHTML=="")
+			{
+				aLi[i].style.border="0px";
+			}
+		}
+	}
+	createCalendar(tMonth);
+	oPre.onclick=function()
+	{
+		createCalendar(/*--*/tMonth);
+	};
+	
+	oNext.onclick=function()
+	{
+		createCalendar(/*++*/tMonth);
+	};
+};
+</script>
+</head>
+
+
+
+
+
+<body>
+<style custom="self"  type="text/css">
+@import url("/_upload/tpl/00/b7/183/template183/style.css");
+</style>
+
+<div style="  background: url(/_upload/tpl/00/b7/183/template183/images/bg.gif) repeat-y;
+  width: 1004px;
+  margin: 0 auto;">
+    <table width="1004 " cellpadding="0" cellspacing="0" border="0" align="center">
+        <tbody>
+            <tr>
+                <td>
+                    <table width="1004" cellpadding="0" cellspacing="0" align="center" height="189">
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <script type="text/javascript" src="/_upload/tpl/00/b7/183/template183/photo.js"></script><style>.axx{padding:0px 7px 3px;*padding:1px 7px;border-left:#cccccc 1px solid;}.bxx{padding:0px 7px 3px;*padding:1px 7px;border-left:#cccccc 1px solid;}</style>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="navbar" frag="面板2">
+        <div class="navbox" frag="窗口2">
+            
+66f
+<div id="wp_nav_w2"> 
+
+ 
+<ul class="wp_nav" data-nav-config="{drop_v: 'down', drop_w: 'right', dir: 'y', opacity_main: '-1', opacity_sub: '-1', dWidth: '0'}">
+      
+     <li class="nav-item i1 "> 
+         <a href="http://jwc.hit.edu.cn/main.htm" title="首页" target="_self"><span class="item-name">首页</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i2 "> 
+         <a href="/2533/list.htm" title="机构设置" target="_self"><span class="item-name">机构设置</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i3 "> 
+         <a href="/2534/list.htm" title="规章制度" target="_self"><span class="item-name">规章制度</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i4 "> 
+         <a href="/2535/list.htm" title="办事指南" target="_self"><span class="item-name">办事指南</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i5 "> 
+         <a href="/2536/list.htm" title="资料下载" target="_self"><span class="item-name">资料下载</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i6 "> 
+         <a href="/2537/list.htm" title="在线服务" target="_self"><span class="item-name">在线服务</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+     <li class="nav-item i7 "> 
+         <a href="http://jwcs.hit.edu.cn/" title="网络教学" target="_self"><span class="item-name">网络教学</span></a><i class="mark"></i> 
+          
+     </li> 
+      
+</ul> 
+ 
+ 
+ </div>
+291
+
+        </div>
+    </div>
+    <div class="wrapper" id="container" style="  background-color: #fff;">
+        <div class="inner">
+            <div class="mod mod1">
+                <div class="ml" frag="面板3">
+                    <div class="post post-3 mbox" frag="窗口3" style="background:url(/_upload/tpl/00/b7/183/template183/images/block_bg_1.gif) no-repeat; height:232px;">
+                        <div style="padding: 20px 0px 0px 5px;">
+                            <img src="/_upload/tpl/00/b7/183/template183/images/news.png"/>  
+                        </div>
+                        <div class="con">
+                            
+428
+<div id="wp_news_w3"> 
+
+                                <ul class="news_list">
+                                    
+                                    <li class="news1 n1 clearfix">
+                                        <span class="news_title"><a href='/2018/0925/c4348a215444/page.htm' target='_blank' title='教务处党支部召开专题党课学习《中国共产党纪律处分条例》暨“反腐倡廉每季一课”2018年第三季度专题学习'>教务处党支部召开专题党课学习《中国共产党纪律处分条例》暨“反...</a>&nbsp;&nbsp;2018-09-25</span>
+                                    </li>
+                                    <li class="news1 n2 clearfix">
+                                        <span class="news_title"><a href='/2018/0728/c4348a213522/page.htm' target='_blank' title='教务处党支部召开党员大会'>教务处党支部召开党员大会</a>&nbsp;&nbsp;2018-07-28</span>
+                                    </li>
+                                </ul>
+                            </div> 
+
+551
+
+                        </div>
+                        <div class="more_btn" frag="按钮" type="更多">
+                            <a href="/2590/list.htm" class="w3_more"><span class="more_text" frag="按钮内容"><img src="/_upload/tpl/00/b7/183/template183/images/more_blue.jpg"/></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table border="0" cellpadding="0" cellspacing="0" background="/_upload/tpl/00/b7/183/template183/images/block_bg_3.gif" height="285" width="280">
+                        <tbody>
+                            <tr>
+                                <td style="padding-top:2px;padding-left:4px;" valign="top" height="30">
+                                    <a href="http://www.hit.edu.cn/xl/list.htm" target="_blank"><img src="/_upload/tpl/00/b7/183/template183/images/calender.png" width="268" height="35" border="0"/></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="206" align="center" valign="top">
+                                    <div>
+                                        <div frag="面板91">
+                                            <div frag="窗口91">
+                                                
+6dd
+<div class="wp_sclndr_box_style3" style="margin: 0 auto;">
+<div id="wp_sclndr_w91"  class="wp_sclndr"></div>
+<div class="printButton" id="endPrint">
+<span id="schoolClnr_w91" class="tailerType" style="display:none;" >/>
+大事/>
+学术报告/>
+信息预告</span>
+</div>
+<div id="newslist_w91"></div>
+</div>
+<script type="text/javascript"> 
+var url="/_wp3services/generalQuery?queryObj=trailer&siteId=80&type=2&columnId=2641&locale=l&time=t";
+var ifrUrl="/_web/_plugs/trailer/web/print.jsp?siteId=80&type=2&columnId=2641&locale=l&time=t&firstDay=2018-09-03&lastDay=2019-01-13&print=true&_p=YXM9ODAmdD0xODMmZD01NDkmcD0xJm09U04m&showType=false&trailerType=1,2,3";
+var wp_sclndr_w91;
+var type="";
+type="1,2,3";
+var  param = "&trailerType=" + type;
+$(function(){ 
+loadWboxwp_sclndr_w91();
+   wp_sclndr_w91=$("#wp_sclndr_w91").WPsclndr({ 
+             title: "2018年秋季学期", 
+             notes: "", 
+             firstDay: "2018-09-03", 
+             lastDay: "2019-01-13", 
+             theme: "style3", 
+             ajaxUrl: url, 
+             ajaxData:{'trailerType':type}, 
+         holiday:{
+            active:false         },
+            showToday:true,
+eventWrap:"#newslist_w91",
+eventTpl:"<div class='wpclndr-event-news'><h2><a href='{{d.url}}' target='_blank'>{{d.title}}</a></h2><p><span class='event-news-filed'>地点：</span>{{d.locale}}</p><p><span class='event-news-filed'>时间：</span>{{d.time}}</p></div>"
+         }); 
+     }); 
+ function loadWboxwp_sclndr_w91(){   var opt_printopt_print_w91 = $("#opt_print_w91").wBox({
+    noTitle: false,
+    title: '校历打印',
+    requestType: "iframe",
+    iframeWH: {width: "630", height: "900"},
+     target:ifrUrl+param
+    });
+  }</script> 
+
+28c
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ml pg" frag="面板31">
+                    <div class="post post-31 mbox" frag="窗口31">
+                        <div style="padding: 20px 0px 0px 5px;">
+                              	<img src="/_upload/tpl/00/b7/183/template183/images/search.png"/>  
+                        </div>
+                        
+309
+<form method="post" action="/_web/search/doSearch.do?locale=zh_CN&request_locale=zh_CN&_p=YXM9ODAmdD0xODMmZD01NDkmcD0xJm09U04m" target="_blank">
+    <div class="wp_search wp_search_ad">
+        <table >
+            <tr>
+                <td align="left" height="" width="60">关键字：</td>
+                <td align="left" width="130"><input type="text" name="keyword" style="width: 120px" class="keyword"> </td>
+<td width="60"><input class="search" type="submit" value="" /></td>
+            </tr>
+        </table>
+    </div>
+</form>
+<script>
+    $(document).ready(function() {
+        $("#beginTime").datepicker({picker: "<span class='datepicker'></span>"});
+        $("#endTime").datepicker({picker: "<span class='datepicker'></span>"});
+    });
+</script>
+1cd
+
+                    </div>
+                </div>
+            </div>
+            <div class="mod mod2">
+                <div class="mc" frag="面板4">
+                    <div class="post post-4 mbox" frag="窗口4">
+                        <div>
+                              	<img src="/_upload/tpl/00/b7/183/template183/images/notices.gif"/>  
+                        </div>
+                        <div class="con">
+                            
+186c
+<div id="wp_news_w4"> 
+
+                                <ul class="news_list">
+                                    
+                                    <li class="news n1 clearfix">
+                                        <span class="news_title"><a href='/2018/1022/c4349a216378/page.htm' target='_blank' title='转发：国教院李雪皎老师&quot;公共汉语&quot;课程停课通知'>转发：国教院李雪皎老师&quot;公共汉语&quot;课程停课...</a></span><span class="news_meta post_time">2018-10-22</span>  
+                                    <li class="news n2 clearfix">
+                                        <span class="news_title"><a href='/2018/1018/c4349a216272/page.htm' target='_blank' title='关于二校区新生研讨课“电子测试技术－信息化武器装备的质量卫士”停课的通知'>关于二校区新生研讨课“电子测试技术－信息...</a></span><span class="news_meta post_time">2018-10-18</span>  
+                                    <li class="news n3 clearfix">
+                                        <span class="news_title"><a href='/2018/1012/c4349a215987/page.htm' target='_blank' title='关于2018级本科生体育课程选课的通知'>关于2018级本科生体育课程选课的通知</a></span><span class="news_meta post_time">2018-10-12</span>  
+                                    <li class="news n4 clearfix">
+                                        <span class="news_title"><a href='/2018/1010/c4349a215923/page.htm' target='_blank' title='关于遴选2018年搜狗大学生创新实践项目的通知'>关于遴选2018年搜狗大学生创新实践项目的通...</a></span><span class="news_meta post_time">2018-10-10</span>  
+                                    <li class="news n5 clearfix">
+                                        <span class="news_title"><a href='/2018/0928/c4349a215558/page.htm' target='_blank' title='转发：陈越红老师“世界经典电影导读”课程调课通知'>转发：陈越红老师“世界经典电影导读”课程...</a></span><span class="news_meta post_time">2018-09-28</span>  
+                                    <li class="news n6 clearfix">
+                                        <span class="news_title"><a href='/2018/0925/c4349a215434/page.htm' target='_blank' title='关于2019年春季学期俄罗斯西伯利亚联邦大学本科生交换项目申报的通知'>关于2019年春季学期俄罗斯西伯利亚联邦大学...</a></span><span class="news_meta post_time">2018-09-25</span>  
+                                    <li class="news n7 clearfix">
+                                        <span class="news_title"><a href='/2018/0925/c4349a215400/page.htm' target='_blank' title='关于发布2018年秋季学期中国大学MOOC课程学习密码的通知'>关于发布2018年秋季学期中国大学MOOC课程学...</a></span><span class="news_meta post_time">2018-09-25</span>  
+                                    <li class="news n8 clearfix">
+                                        <span class="news_title"><a href='/2018/0925/c4349a215391/page.htm' target='_blank' title='关于发布2018年秋季学期创新研修课上课信息的通知'>关于发布2018年秋季学期创新研修课上课信息...</a></span><span class="news_meta post_time">2018-09-25</span>  
+                                    <li class="news n9 clearfix">
+                                        <span class="news_title"><a href='/2018/0918/c4349a215135/page.htm' target='_blank' title='关于2018年下半年大学英语四级、英语六级补报名的通知'>关于2018年下半年大学英语四级、英语六级补...</a></span><span class="news_meta post_time">2018-09-18</span>  
+                                    <li class="news n10 clearfix">
+                                        <span class="news_title"><a href='/2018/0917/c4349a215111/page.htm' target='_blank' title='学校确定具备2019年推免生资格学生名单公示（申报特殊学术专长）'>学校确定具备2019年推免生资格学生名单公示...</a></span><span class="news_meta post_time">2018-09-17</span>  
+                                    <li class="news n11 clearfix">
+                                        <span class="news_title"><a href='/2018/0912/c4349a214950/page.htm' target='_blank' title='关于发布2018年秋季学期MOOC学习手册的通知'>关于发布2018年秋季学期MOOC学习手册的通知</a></span><span class="news_meta post_time">2018-09-12</span>  
+                                    <li class="news n12 clearfix">
+                                        <span class="news_title"><a href='/2018/0907/c4349a214678/page.htm' target='_blank' title='哈尔滨工业大学关于2018年秋季学期获准修读辅修专业（学位）学生办理选课手续等相关事宜通知'>哈尔滨工业大学关于2018年秋季学期获准修读...</a></span><span class="news_meta post_time">2018-09-07</span>  
+                                    <li class="news n13 clearfix">
+                                        <span class="news_title"><a href='/2018/0907/c4349a214632/page.htm' target='_blank' title='关于2018年“中秋节”、“国庆节”本科生停课的通知'>关于2018年“中秋节”、“国庆节”本科生停...</a></span><span class="news_meta post_time">2018-09-07</span>  
+                                    <li class="news n14 clearfix">
+                                        <span class="news_title"><a href='/2018/0906/c4349a214601/page.htm' target='_blank' title='2018年下半年大学外语四、六级考试本科生报名通知'>2018年下半年大学外语四、六级考试本科生报...</a></span><span class="news_meta post_time">2018-09-06</span>  
+                                    <li class="news n15 clearfix">
+                                        <span class="news_title"><a href='/2018/0906/c4349a214592/page.htm' target='_blank' title='关于2018级本科生英语选课的通知'>关于2018级本科生英语选课的通知</a></span><span class="news_meta post_time">2018-09-06</span>  
+                                    </li>
+                                </ul>
+                            </div> 
+
+f2c
+
+                        </div>
+                        <div class="more_btn" frag="按钮" type="更多">
+                            <a href="/2591/list.htm" class="w4_more"><span class="more_text" frag="按钮内容"><img src="/_upload/tpl/00/b7/183/template183/images/more_blue.jpg"/></span></a>
+                        </div>
+                    </div>
+                    <table border="0" cellpadding="0" cellspacing="0" background="/_upload/tpl/00/b7/183/template183/images/quick_bg.png" width="376" height="84">
+                        <tbody>
+                            <tr>
+                                <td style="padding-left:70px;">
+                                     <a href="http://jwts.hit.edu.cn/" target="_blank"><img src="/_upload/tpl/00/b7/183/template183/images/quick_2.png" width="75" height="70"/></a></a>
+                                </td>
+                                <td style="padding-left:10px;">
+                                   <a href="http://jwcs.hit.edu.cn/"target="_blank"><img src="/_upload/tpl/00/b7/183/template183/images/quick_3.png" width="75" height="70"/></a>
+                                </td>
+                                <td style="padding-left:30px;">
+                                    <a href="http://sjjx.hit.edu.cn"target="_blank"><img src="/_upload/tpl/00/b7/183/template183/images/quick_4.png" width="75" height="70"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mr" frag="面板5">
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tbody>
+                            <tr>
+                                <td style=" padding-top:10px;">
+                                    <img src="/_upload/tpl/00/b7/183/template183/images/special.png" width="211" height="35"/>
+                                </td>
+                            </tr>
+<tr>
+                                <td align="center" style="padding-top:15px;">
+                                    <a href="http://jwc.hit.edu.cn/qlqd/list.htm"><img src="/_upload/tpl/00/b7/183/template183/images/special_4.png" width="170" height="62"/></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:15px;">
+                                    <a href="http://jwc.hit.edu.cn/2539/list.htm"><img src="/_upload/tpl/00/b7/183/template183/images/special_1.png" width="170" height="62"/></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:15px;">
+                                    <a href="http://jwc.hit.edu.cn/2615/list.htm"><img src="/_upload/tpl/00/b7/183/template183/images/special_2.jpg" width="170" height="62"/></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:15px; padding-bottom:15px;">
+                                    <a href="http://jwc.hit.edu.cn/2617/list.htm"><img src="/_upload/tpl/00/b7/183/template183/images/special_3.jpg" width="170" height="62"/></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="post post-5 mbox" frag="窗口5">
+                        <div style="padding: 20px 0px 0px 0px;">
+                              	<img src="/_upload/tpl/00/b7/183/template183/images/asks.png"/>  
+                        </div>
+                        <div class="con">
+                            
+4d2
+<div id="wp_news_w5"> 
+
+                                <ul class="news_list">
+                                    
+                                    <li class="news2 n1 clearfix">
+                                        <span class="news_title"><a href='/2018/0113/c4350a198247/page.htm' target='_blank' title='哈尔滨工业大学本科生交流学习指南（2018版）'>哈尔滨工业大学本科生交流...</a></span>
+                                    </li>
+                                    <li class="news2 n2 clearfix">
+                                        <span class="news_title"><a href='/2017/1031/c4350a187298/page.htm' target='_blank' title='本科生院的2个微信公众号有什么区别？'>本科生院的2个微信公众号...</a></span>
+                                    </li>
+                                    <li class="news2 n3 clearfix">
+                                        <span class="news_title"><a href='/2016/0918/c4350a165017/page.htm' target='_blank' title='如何办理成绩单及各类证明？'>如何办理成绩单及各类证明...</a></span>
+                                    </li>
+                                </ul>
+                            </div> 
+
+2c0
+
+                        </div>
+                        <div class="more_btn" frag="按钮" type="更多">
+                            <a href="/2592/list.htm" class="w5_more"><span class="more_text" frag="按钮内容"><img src="/_upload/tpl/00/b7/183/template183/images/more_yellow.gif"/></span></a>
+                        </div>
+                    </div>
+                    <div class="post post-52 mbox" frag="窗口52">
+                        <div style="padding: 20px 0px 15px 0px;">
+                              	<img src="/_upload/tpl/00/b7/183/template183/images/links.png"/>  
+                        </div>
+                        <div class="con">
+                            
+377
+<select style="width:200px;" onChange="w52_openLink(this)" class="w52_openLink"> 
+<option value="" selected>友情链接</option> 
+<option value="" >————————————</option> 
+<option value="http://hituc.hit.edu.cn" >本科生院 </option> 
+<option value="http://xg.hit.edu.cn" >学生工作部（处） </option> 
+<option value="http://zsb.hit.edu.cn" >本科生招生办公室 </option> 
+<option value="http://dxrs.hit.edu.cn" >团委 </option> 
+<option value="http://hitgs.hit.edu.cn" >研究生院 </option> 
+<option value="http://210.46.73.14/jpkc/" >数学在线测试系统 </option> 
+</select> 
+<script language=javascript> 
+      function w52_openLink(obj) { 
+          var v = obj.value; 
+          if (v != "") { 
+              window.open(v); 
+              obj.blur(); 
+          } 
+          obj.selectedIndex = 0; 
+      } 
+</script>
+26f
+
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="wrapper" id="footer">
+        <div class="inner">
+            <p class="copyright">
+                Copyright 2013 © 哈尔滨工业大学教务处 技术支持 哈尔滨工业大学网络与信息中心
+            </p>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+ <img src="/_visitcount?siteId=80&type=1&columnId=4288" style="display:none" width="0" height="0"></image>
+0
+

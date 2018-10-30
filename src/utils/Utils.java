@@ -1,9 +1,14 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Utils {
 
@@ -46,7 +51,7 @@ public class Utils {
       header.setPort(Integer.parseInt(map[1]));
       header.setHost(map[0]);
     }
-    header.setRequest(strings);
+    header.initRequest(strings);
     return header;
   }
 
@@ -83,13 +88,54 @@ public class Utils {
    * @throws IOException
    */
   public void fromInputToOutput(InputStream inputStream,
-      OutputStream outputStream, int bufSize) throws IOException {
+      OutputStream outputStream, int bufSize,OutputStream fileOutStream) throws IOException {
     byte[] buffer = new byte[bufSize];
     int size = 0;
     while ((size = inputStream.read(buffer)) != -1) {
       //System.out.println(new String(buffer, "utf8"));
+      if(fileOutStream!=null) {
+        fileOutStream.write(buffer,0,size);
+        fileOutStream.flush();
+      }
       outputStream.write(buffer, 0, size);
       outputStream.flush();
     }
+  }
+  
+  /**
+   * 从一个String的URL中解析得到一个Path类
+   * @param Strurl
+   * @return
+   * @throws MalformedURLException
+   */
+  public Path getPathFromURL(String Strurl,String father) throws MalformedURLException {
+    URL url = new URL(Strurl);
+    Path path = null;
+    if(url.getFile().endsWith("/")) {
+      path = Paths.get(father,url.getHost(),url.getFile(),"index.txt");
+    }else {
+      path = Paths.get(father,url.getHost(),url.getFile());
+    }
+    return path;
+  }
+  
+  /**
+   * 根据传入的path路径，如果该文件不存在就分级创建文件，并返回该文件对象；
+   * 如果存在则直接返回该文件对象
+   * @param path         文件的path路径
+   * @return
+   * @throws IOException
+   */
+  public File createFile(Path path) throws IOException {
+    File parent = path.getParent().toFile();
+    File file = path.toFile();
+    if(!parent.exists()) {
+      parent.mkdirs();
+    }
+    if(!file.exists()) {
+      file.createNewFile();
+    }
+    
+    return file;
   }
 }

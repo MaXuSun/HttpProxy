@@ -1,15 +1,19 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Path;
 
-import utils.StaticData;
 import utils.Forbid;
 import utils.HttpHeader;
+import utils.StaticData;
 import utils.Utils;
 
 /**
@@ -39,6 +43,7 @@ public class ProxyHandle implements Runnable {
     Socket serSocket = null; // 服务端的socket
     OutputStream serOutStream = null; // 服务端socket的输出流
     InputStream serInStream = null; // 服务端socket的输入流
+    FileOutputStream fileOutStream = null;
 
     try {
       cliInStream = clisocket.getInputStream(); // 得到客户端输入流
@@ -49,14 +54,16 @@ public class ProxyHandle implements Runnable {
 
       // 将从客户端得到的请求进行分解，然后存在header变量中
       header = utils.parseHeader(request);
+      
+      System.err.println(header.getRequest());
+      header.setRequest(StaticData.IF_MODIFIED, "123");
+      header.setRequest("Content-Length", "90");
+      System.err.println(header.getRequest());
 
       // 对于空解析直接返回，跳过
       if (header.getHost() == null || header.getHost().isEmpty()) {
         return;
       }
-      // if (!header.getHost().equalsIgnoreCase("today.hit.edu.cn")) {
-      // return;
-      // }
 
       // 禁止对某些url或者主机访问
       if (forbid.containUrl(header.getUrl())
@@ -65,6 +72,7 @@ public class ProxyHandle implements Runnable {
         cliOutStream.flush();
         return;
       }
+      
       // 禁止某些用户访问外部网络
       if (forbid.containUser(header.getCookie())
           || forbid.containUser(this.clisocket.getInetAddress().toString())) {
@@ -77,6 +85,16 @@ public class ProxyHandle implements Runnable {
       if (openPushingSite) {
         this.setPhishingSite(header);
       }
+
+      //对文件进行缓存
+      if (this.cacheFile(header.getUrl(), cliOutStream)) {
+        return;
+      }
+
+      Path path = utils.getPathFromURL(header.getRequest(), "cache");
+      File file = utils.createFile(path);
+      fileOutStream = new FileOutputStream(file);
+      
 
       System.out.println(
           header.getHost() + "   " + header.getPort() + "  " + header.getUrl());
@@ -97,19 +115,24 @@ public class ProxyHandle implements Runnable {
 
       // 根据情况分别对HTTPS和HTTP请求进行处理
       if ("CONNECT".equalsIgnoreCase(header.getMethod())) {
-        cliOutStream.write(StaticData.SUCCESS.getBytes());
-        cliOutStream.flush();
-        ProcessHttps(cliInStream, serInStream, cliOutStream, serOutStream);
+         cliOutStream.write(StaticData.SUCCESS.getBytes());
+         cliOutStream.flush();
+         ProcessHttps(cliInStream, serInStream, cliOutStream, serOutStream);
       } else {
-        System.out.println("处理HTTP请求");
+        // System.out.println("处理HTTP请求");
         ProcessHttp(cliInStream, serInStream, cliOutStream, serOutStream,
-            request);
+            request, fileOutStream);
       }
 
     } catch (Exception e) {
       // e.printStackTrace();
     } finally {
-
+      try {
+        if (fileOutStream != null) {
+          fileOutStream.close();
+        }
+      } catch (Exception e2) {
+      }
       try {
         this.clisocket.close();
         cliOutStream.close();
@@ -150,7 +173,7 @@ public class ProxyHandle implements Runnable {
     new Thread(task).start();
 
     // 将客户端的数据读下来发送给服务器端
-    utils.fromInputToOutput(clientInputStream, csOutputStream, 1024);
+    utils.fromInputToOutput(clientInputStream, csOutputStream, 1024, null);
 
     // 用来阻塞，等待Task线程执行完毕，关闭Socket
     while (true) {
@@ -174,7 +197,8 @@ public class ProxyHandle implements Runnable {
    */
   private void ProcessHttp(InputStream clientInputStream,
       InputStream csInputStream, OutputStream clientOutputStream,
-      OutputStream csOutputStream, String request) throws IOException {
+      OutputStream csOutputStream, String request, FileOutputStream fos)
+      throws IOException {
     System.out.println("retuest:\n" + request);
 
     // 将客户端http请求报文发送给服务器端
@@ -187,7 +211,7 @@ public class ProxyHandle implements Runnable {
 
     // 将服务端的响应转发给客户端
     utils.fromInputToOutput(csInputStream, clientOutputStream,
-        StaticData.SERVER_BUFSIZE);
+        StaticData.SERVER_BUFSIZE, fos);
   }
 
   /**
@@ -202,6 +226,30 @@ public class ProxyHandle implements Runnable {
     header.setHost(StaticData.PHISHING_IP);
     header.setPort(StaticData.PHISHING_PORT);
     System.out.println("Set up phishing site successfully!");
+  }
+
+  /**
+   * 缓存文件函数,判断url资源是否被缓存下来了，如果被缓存下来就将该文件
+   * 输出到 cliOutStrem 输出流中
+   * @param Strurl url资源
+   * @param outStream 一个输出流
+   * @return
+   * @throws Exception
+   */
+  private boolean cacheFile(String Strurl, OutputStream outStream)
+      throws Exception {
+    
+    Path path = utils.getPathFromURL(Strurl, "cache");    
+    File file = path.toFile();
+    if (file.exists()) {
+      FileInputStream inputStream = new FileInputStream(file);
+      utils.fromInputToOutput(inputStream, outStream,
+          StaticData.SERVER_BUFSIZE, null);
+      inputStream.close();
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

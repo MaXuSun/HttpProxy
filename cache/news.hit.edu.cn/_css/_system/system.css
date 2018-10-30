@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Date: Tue, 30 Oct 2018 06:01:48 GMT
+Server: Apache/2.4.33 (Unix) mod_jk/1.2.43
+Last-Modified: Sat, 10 Mar 2018 12:00:33 GMT
+ETag: "1e-5670da7eb3a40"
+Accept-Ranges: bytes
+Content-Length: 30
+Connection: close
+Content-Type: text/css
+
+@import "system_editor.css";

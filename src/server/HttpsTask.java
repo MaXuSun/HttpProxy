@@ -29,9 +29,8 @@ public class HttpsTask implements Runnable{
   @Override
   public void run() {
     try {
-      System.out.println("fasfasdfasdgagadg");
       utils.fromInputToOutput(inputStream, outputStream,
-          StaticData.CLIENT_BUFSIZE);
+          StaticData.CLIENT_BUFSIZE,null);
       done = true;
     } catch (IOException e) {
     }

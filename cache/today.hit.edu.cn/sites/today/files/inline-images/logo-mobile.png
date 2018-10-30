@@ -1,0 +1,12 @@
+HTTP/1.1 304 Not Modified
+Date: Tue, 30 Oct 2018 06:04:11 GMT
+Server: Apache/2.4.18 (Ubuntu)
+ETag: "397d-56b304adaaa80"
+Last-Modified: Wed, 02 May 2018 03:00:42 GMT
+Content-Type: image/png
+X-Varnish: 130675053 140216169
+Age: 91
+Via: 1.1 varnish-v4
+X-Varnish-Cache: HIT
+Connection: keep-alive
+
